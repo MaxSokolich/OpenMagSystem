@@ -5,11 +5,15 @@ import xbox
 import time as time
 import os
 import gpiozero as gp
-
+from AcousticHandler import AcousticHandler
 
 #os.system("sudo pigpiod")
 #os.system("sudo systemctl enable pigpiod")
 #os.system("sudo systemctl disable Start_GUI_Boot.service")
+
+AcousticModule = AcousticHandler()
+ACOUSTIC_PARAMS = {"acoustic_freq": 10000}
+
 
 scalex= 1
 scaley= .75
@@ -772,6 +776,23 @@ def Handle_Xbox():
     '''
     functions assigned to each button of the controller
     '''
+    
+    def A_button():
+        #apply acoustic field
+        afreq = ACOUSTIC_PARAMS["acoustic_freq"]
+        AcousticModule.start(afreq)
+        
+        Text_Box.insert(tk.END, str(afreq)+"\n")
+        Text_Box.see("end")
+    
+    def B_button():
+        AcousticModule.stop()
+        
+        Text_Box.insert(tk.END, "Acoustic Stopped")
+        Text_Box.see("end")
+        
+        
+        
     def Left_Joystick():
         #Output Uniform Signal
         Coil1.value = round(joy.leftY(),2)*scaley  #converging
@@ -934,11 +955,22 @@ def Handle_Xbox():
         
         # Left analog stick (x axis range from -1 to 1, y axis range from -1 to 1)
         #to avoid divide by zero error in arctan
+        
+        #apply frequency
+        if joy.A():
+            A_button()
+            
+        #stop frequency
+        elif joy.B():
+            B_button()
+            
+        #uniform field
         if not joy.leftX() == 0 or not joy.leftY() == 0:
             Text_Box.insert(tk.END, 'left joy activated\n')
             Text_Box.see("end")
             Left_Joystick()
         
+        #rotating field
         elif not joy.rightX() == 0 or not joy.rightY() == 0:
             Text_Box.insert(tk.END, 'right joy activated\n')
             Text_Box.see("end")
@@ -947,16 +979,13 @@ def Handle_Xbox():
                 #Text_Box.insert(tk.END, 'sent'+str(alpha))
                 #send alpha to socket
             
-        elif joy.A() == True:
-            Text_Box.insert(tk.END, 'A\n')
-            Text_Box.see("end")
-            
+        #positive Z
         elif joy.rightTrigger() > 0:
             Text_Box.insert(tk.END, 'right trigger activated\n')
             Text_Box.see("end")
             Right_Trigger()
                 
-            
+        #negative Z
         elif joy.leftTrigger() > 0:
             Text_Box.insert(tk.END, 'left trigger activated\n')
             Text_Box.see("end")
@@ -998,6 +1027,98 @@ Xbox_Button.grid(row=4,column=0, sticky = "nswe", columnspan = 2)
 
 
 
+def edit_acoustic_params():
+        """
+        Creates a new window to control the AD9850 Signal generator module. 
+        genereates sinusoidal or square waveforms from 0-40 MHz
+        Args:
+            None
+        Returns:
+            None
+        """
+        acousticwindow = tk.Toplevel(window)
+        acousticwindow.title("Acoustic Module")
+
+        
+        
+        def apply_freq():
+            AcousticModule.start(int(acoustic_slider.get()))
+            print(" -- waveform ON --")
+        
+        def stop_freq():
+            AcousticModule.stop()
+            print(" -- waveform OFF --")
+        
+        def update_loop_slider_values(event):
+            """
+            Constantly updates acoustic params when the sliders are used.
+            Params:
+                event
+            Returns:
+                None
+            """
+            ACOUSTIC_PARAMS["acoustic_freq"] = int(acoustic_slider.get())
+            apply_freq()
+            window.update()
+
+        #create apply widget
+        apply_button = tk.Button(
+            acousticwindow, 
+            text="Apply", 
+            command=apply_freq, 
+            height=1, width=10,
+            bg = 'blue',
+            fg= 'white'
+        )
+        apply_button.pack()
+        
+        #create stop widget
+        stop_button = tk.Button(
+            acousticwindow, 
+            text="Stop", 
+            command=stop_freq, 
+            height=1, width=10,
+            bg = 'red',
+            fg= 'white'
+        )
+        
+        stop_button.pack()
+
+        #create freq widget
+        acoustic_frequency = tk.DoubleVar()
+        acoustic_slider = tk.Scale(
+            master=acousticwindow,
+            label="Acoustic Frequency",
+            from_=10000,
+            to=2000000,
+            resolution=1000,
+            variable=acoustic_frequency,
+            width=50,
+            length=1000,
+            orient=tk.HORIZONTAL,
+            command=update_loop_slider_values,
+        )
+       
+        acoustic_slider.set(10000)        
+        acoustic_slider.pack()
+        
+
+
+
+acoustic_params_button = tk.Button(
+            window,
+            text="Edit Acoustic Params",
+            command=edit_acoustic_params,
+            bg = 'cyan',
+            fg= 'black'
+        )
+
+acoustic_params_button.grid(row=0, column=5, sticky = "nswe" )
+
+
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 

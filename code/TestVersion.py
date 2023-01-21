@@ -4,7 +4,11 @@ import numpy as np
 import xbox
 import time as time
 import os
+#from AcousticHandler import AcousticHandler
 
+#initilize acpoustic module
+#AcousticModule = AcousticHandler()
+ACOUSTIC_PARAMS = {"acoustic_freq": 10000}
 
 
 scalex= 1
@@ -84,9 +88,9 @@ window = tk.Tk() #initilize a window window.title("MagneticFieldGui2")
 # get the screen dimension
 
 window.geometry("1024x768")
-window.attributes('-fullscreen', True)
+#window.attributes('-fullscreen', True)
 
-rows = [0,1,2,3,4,5,6,7]
+rows = [0,1,2,3,4,5,6,7,7]
 columns = [0,1,2,3,4,5,6,7]
 window.columnconfigure(rows, minsize=128)
 window.rowconfigure(columns, minsize = 96)
@@ -655,7 +659,7 @@ def Handle_Xbox():
             Left_Joy_Direction = (180/np.pi)*np.arctan2(joy.leftY() ,joy.leftX())
             Move_Arrow(round(Left_Joy_Direction,2))
     
- 
+        
     def Right_Trigger():
         #Output positive Z Field
         
@@ -840,7 +844,99 @@ Xbox_Button.grid(row=4,column=0, sticky = "nswe", columnspan = 2)
 
 
 
+def edit_acoustic_params():
+        """
+        Creates a new window to control the AD9850 Signal generator module. 
+        genereates sinusoidal or square waveforms from 0-40 MHz
+        Args:
+            None
+        Returns:
+            None
+        """
+        acousticwindow = tk.Toplevel(window)
+        acousticwindow.title("Acoustic Module")
 
+        
+        
+        def apply_freq():
+            #AcousticModule.start(int(acoustic_slider.get()))
+            print(acoustic_slider.get())
+            print(" -- waveform ON --")
+        
+        def stop_freq():
+            #AcousticModule.stop()
+            print(" -- waveform OFF --")
+        
+        def update_loop_slider_values(event):
+            """
+            Constantly updates acoustic params when the sliders are used.
+            Params:
+                event
+            Returns:
+                None
+            """
+            ACOUSTIC_PARAMS["acoustic_freq"] = int(acoustic_slider.get())
+            apply_freq()
+            window.update()
+
+        #create apply widget
+        apply_button = tk.Button(
+            acousticwindow, 
+            text="Apply", 
+            command=apply_freq, 
+            height=1, width=10,
+            bg = 'blue',
+            fg= 'white'
+        )
+        apply_button.pack()
+        
+        #create stop widget
+        stop_button = tk.Button(
+            acousticwindow, 
+            text="Stop", 
+            command=stop_freq, 
+            height=1, width=10,
+            bg = 'red',
+            fg= 'white'
+        )
+        
+        stop_button.pack()
+
+        #create freq widget
+        acoustic_frequency = tk.DoubleVar()
+        acoustic_slider = tk.Scale(
+            master=acousticwindow,
+            label="Acoustic Frequency",
+            from_=10000,
+            to=2000000,
+            resolution=1000,
+            variable=acoustic_frequency,
+            width=50,
+            length=1000,
+            orient=tk.HORIZONTAL,
+            command=update_loop_slider_values,
+        )
+       
+        acoustic_slider.set(10000)        
+        acoustic_slider.pack()
+        
+
+
+
+acoustic_params_button = tk.Button(
+            window,
+            text="Edit Acoustic Params",
+            command=edit_acoustic_params,
+            bg = 'cyan',
+            fg= 'black'
+        )
+
+acoustic_params_button.grid(row=0, column=5, sticky = "nswe" )
+
+
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 #Close Window
 def EXIT():
