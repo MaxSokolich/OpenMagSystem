@@ -1,2 +1,0 @@
-- add acoustic module and hall effect sensor module
-- clean up code 
