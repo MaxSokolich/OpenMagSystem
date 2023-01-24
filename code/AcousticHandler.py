@@ -15,9 +15,9 @@ class AcousticHandler:
 		GPIO.setmode(GPIO.BOARD)
 		GPIO.setwarnings(False)
 
-		self.W_CLK = 21
-		self.FQ_UD = 22
-		self.DATA = 23
+		self.W_CLK = 32
+		self.FQ_UD = 28
+		self.DATA = 26
 		self.RESET = 24
 
 		# setup IO bits
