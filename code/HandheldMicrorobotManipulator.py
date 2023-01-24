@@ -950,22 +950,35 @@ def Handle_Xbox():
   
         window.update() 
 
-  
+    button_state = 0
+    last_state = 0
+    counter = 0
+    switch_state = 0
     while not joy.Back():
+   
         
-        # Left analog stick (x axis range from -1 to 1, y axis range from -1 to 1)
-        #to avoid divide by zero error in arctan
-        
-        #apply frequency
-        if joy.A():
-            A_button()
-            
-        #stop frequency
-        elif joy.B():
-            B_button()
+       
+        #A Button Function --> Acoustic Module Toggle
+        button_state = joy.A()
+        if button_state != last_state:
+            if button_state == True:
+                counter +=1
+        last_state = button_state
+        if counter %2 != 0 and switch_state !=0:
+            switch_state = 0
+            self.AcousticModule.start(int(acoustic_slider.get()))
+            Text_Box.insert(tk.END, str(int(acoustic_slider.get())) + '\n')
+            Text_Box.see("end")
+        elif counter %2 == 0 and switch_state !=1:
+            switch_state = 1
+            self.AcousticModule.stop()
+            Text_Box.insert(tk.END, 'OFF\n')
+            Text_Box.see("end")
+                
+          
             
         #uniform field
-        if not joy.leftX() == 0 or not joy.leftY() == 0:
+        elif not joy.leftX() == 0 or not joy.leftY() == 0:
             Text_Box.insert(tk.END, 'left joy activated\n')
             Text_Box.see("end")
             Left_Joystick()
