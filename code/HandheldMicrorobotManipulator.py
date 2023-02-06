@@ -9,7 +9,7 @@ from AcousticHandler import AcousticHandler
 
 #os.system("sudo pigpiod")
 #os.system("sudo systemctl enable pigpiod")
-#os.system("sudo systemctl disable Start_GUI_Boot.service")
+os.system("sudo systemctl disable GUI.service")
 
 AcousticModule = AcousticHandler()
 ACOUSTIC_PARAMS = {"acoustic_freq": 10000}
@@ -776,22 +776,6 @@ def Handle_Xbox():
     '''
     functions assigned to each button of the controller
     '''
-    
-    def A_button():
-        #apply acoustic field
-        afreq = ACOUSTIC_PARAMS["acoustic_freq"]
-        AcousticModule.start(afreq)
-        
-        Text_Box.insert(tk.END, str(afreq)+"\n")
-        Text_Box.see("end")
-    
-    def B_button():
-        AcousticModule.stop()
-        
-        Text_Box.insert(tk.END, "Acoustic Stopped")
-        Text_Box.see("end")
-        
-        
         
     def Left_Joystick():
         #Output Uniform Signal
@@ -950,22 +934,38 @@ def Handle_Xbox():
   
         window.update() 
 
-  
+    button_state = 0
+    last_state = 0
+    counter = 0
+    switch_state = 0
     while not joy.Back():
         
         # Left analog stick (x axis range from -1 to 1, y axis range from -1 to 1)
         #to avoid divide by zero error in arctan
         
         #apply frequency
-        if joy.A():
-            A_button()
-            
-        #stop frequency
-        elif joy.B():
-            B_button()
-            
+        button_state = joy.A()
+        if button_state != last_state:
+            if button_state == True:
+                counter+=1
+        last_state = button_state
+        
+        if counter %2 !=0 and switch_state !=0:
+            switch_state = 0
+            afreq = int(ACOUSTIC_PARAMS["acoustic_freq"])
+            AcousticModule.start(afreq)            
+            Text_Box.insert(tk.END, str(afreq)+"\n")
+            Text_Box.see("end")
+                
+        elif counter %2 ==0  and switch_state !=1:
+            switch_state = 1
+            AcousticModule.stop() 
+            Text_Box.insert(tk.END, "Acoustic OFF\n")
+            Text_Box.see("end")
+           
+               
         #uniform field
-        if not joy.leftX() == 0 or not joy.leftY() == 0:
+        elif not joy.leftX() == 0 or not joy.leftY() == 0:
             Text_Box.insert(tk.END, 'left joy activated\n')
             Text_Box.see("end")
             Left_Joystick()
@@ -1045,6 +1045,9 @@ def edit_acoustic_params():
             AcousticModule.start(int(acoustic_slider.get()))
             print(" -- waveform ON --")
         
+        def test_freq():
+            AcousticModule.start(int(10000))
+            
         def stop_freq():
             AcousticModule.stop()
             print(" -- waveform OFF --")
@@ -1066,7 +1069,7 @@ def edit_acoustic_params():
             acousticwindow, 
             text="Apply", 
             command=apply_freq, 
-            height=1, width=10,
+            height=5, width=10,
             bg = 'blue',
             fg= 'white'
         )
@@ -1077,19 +1080,32 @@ def edit_acoustic_params():
             acousticwindow, 
             text="Stop", 
             command=stop_freq, 
-            height=1, width=10,
+            height=5, width=10,
             bg = 'red',
             fg= 'white'
         )
         
         stop_button.pack()
+        
+        #create test widget
+        test_button = tk.Button(
+            acousticwindow, 
+            text="Test 10kHz", 
+            command=test_freq, 
+            height=5, width=10,
+            bg = 'green',
+            fg= 'white'
+        )
+        
+        test_button.pack()
+
 
         #create freq widget
         acoustic_frequency = tk.DoubleVar()
         acoustic_slider = tk.Scale(
             master=acousticwindow,
             label="Acoustic Frequency",
-            from_=10000,
+            from_=1000000,
             to=2000000,
             resolution=1000,
             variable=acoustic_frequency,
@@ -1140,9 +1156,9 @@ def EXIT():
     
     window.quit()
     window.destroy()
-    #os.system("sudo systemctl daemon-reload")
-    #os.system("sudo systemctl enable Start_GUI_Boot.service")
-    #os.system("sudo shutdown -h now")
+    os.system("sudo systemctl daemon-reload")
+    os.system("sudo systemctl enable GUI.service")
+    os.system("sudo shutdown -h now")
 Close_Button = tk.Button(master = window,text = "Close",width = 5,height = 1,
                   fg = "white",bg = "black",command = EXIT)
 Close_Button.grid(row=rows[7], column = columns[7], sticky = "nswe")
