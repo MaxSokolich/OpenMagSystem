@@ -12,13 +12,13 @@ class AcousticHandler:
 		# setup GPIO
 
 		#GPIO.setmode(GPIO.TEGRA_SOC)
-		GPIO.setmode(GPIO.BOARD)
+		GPIO.setmode(GPIO.BCM)
 		GPIO.setwarnings(False)
 
-		self.W_CLK = 32
-		self.FQ_UD = 28
-		self.DATA = 26
-		self.RESET = 24
+		self.W_CLK = 12
+		self.FQ_UD = 1
+		self.DATA = 7
+		self.RESET = 8
 
 		# setup IO bits
 		GPIO.setup(self.W_CLK, GPIO.OUT)
@@ -73,7 +73,7 @@ class AcousticHandler:
 
 
 
-'''
+
 if __name__ == "__main__":
 	AcousticMod = AcousticHandler()
 	print("starting waveform...")
@@ -82,4 +82,4 @@ if __name__ == "__main__":
 	time.sleep(1)
 	AcousticMod.stop()
 	print("stopped waveform")
-	AcousticMod.close()'''
+	AcousticMod.close()
