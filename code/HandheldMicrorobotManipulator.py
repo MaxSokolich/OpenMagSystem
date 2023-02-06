@@ -948,12 +948,12 @@ def Handle_Xbox():
         last_state = button_state
         if counter %2 != 0 and switch_state !=0:
             switch_state = 0
-            self.AcousticModule.start(int(acoustic_slider.get()))
+            AcousticModule.start(int(acoustic_slider.get()))
             Text_Box.insert(tk.END, str(int(acoustic_slider.get())) + '\n')
             Text_Box.see("end")
         elif counter %2 == 0 and switch_state !=1:
             switch_state = 1
-            self.AcousticModule.stop()
+            AcousticModule.stop()
             Text_Box.insert(tk.END, 'OFF\n')
             Text_Box.see("end")
                 
@@ -1116,8 +1116,10 @@ def edit_acoustic_params():
 
 acoustic_params_button = tk.Button(
             window,
-            text="Edit Acoustic Params",
+            text="Edit \nAcoustic Params",
             command=edit_acoustic_params,
+            width = 5,
+            height = 1,
             bg = 'cyan',
             fg= 'black'
         )
@@ -1151,7 +1153,7 @@ def EXIT():
     window.destroy()
     os.system("sudo systemctl daemon-reload")
     os.system("sudo systemctl enable GUI.service")
-    os.system("sudo shutdown -h now")
+    #os.system("sudo shutdown -h now")
 Close_Button = tk.Button(master = window,text = "Close",width = 5,height = 1,
                   fg = "white",bg = "black",command = EXIT)
 Close_Button.grid(row=rows[7], column = columns[7], sticky = "nswe")
