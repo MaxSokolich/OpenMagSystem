@@ -8,5 +8,5 @@ todo:
 - reference modmag paper
 - refactor
 - add GUI space for hall sensor readings
-- add acoustic module and hall module 
-- finilize case
+-  hall module 
+
