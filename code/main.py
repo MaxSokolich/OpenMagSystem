@@ -13,7 +13,7 @@ os.system("sudo systemctl disable GUI.service")
 
 AcousticModule = AcousticHandler()
 ACOUSTIC_PARAMS = {"acoustic_freq": 10000}
-acoustic_slider = None
+#acoustic_slider = None
 
 scalex= 1
 scaley= .75
@@ -796,6 +796,9 @@ def Handle_Xbox():
             Coil4.value =  -round(Bx*scalex) # -X
             Coil5.value =   round(Bz*scalez)  # +Z
             Coil6.value =  -round(Bz*scalez)  # -Z
+            
+            Text_Box.insert(tk.END, 'y activated\n')
+            Text_Box.see("end")
 
     
     #Triggers --> Variable +- Z Field
@@ -820,7 +823,8 @@ def Handle_Xbox():
             Z_Strength_Entry.insert(0, str(-round(joy.leftTrigger(),2))) #print 0 -> -1 as negatie Z
             Text_Box.insert(tk.END, 'left trigger activated\n')
             Text_Box.see("end")
-            
+        
+
 
 
     #D-Pad --> Tweezer Quick Field
@@ -864,6 +868,7 @@ def Handle_Xbox():
             Coil6.value = 0
             Text_Box.insert(tk.END, 'dpad left activated\n')
             Text_Box.see("end")
+      
        
     
     #Left Joystick --> Uniform Field
@@ -878,12 +883,11 @@ def Handle_Xbox():
             Move_Arrow(90)
         elif joy.leftX() == 0 and joy.leftY() <0:
             Move_Arrow(270)
-        else:
+        elif joy.leftX() != 0 and joy.leftY() != 0:
             Left_Joy_Direction = (180/np.pi)*np.arctan2(joy.leftY() ,joy.leftX())
             Move_Arrow(round(Left_Joy_Direction,2))
-
-
-
+            
+    
 
 
     def Right_Joystick():#i, t_list, Bx_List, By_List, Bz_List):
@@ -970,7 +974,7 @@ def Handle_Xbox():
             Coil5.value =   round((Bz+BzPer)*scalez/(1+c/A),4)  # +Z
             Coil6.value =  -round((Bz+BzPer)*scalez/(1+c/A),4)  # -Z
         
-        else:
+        elif joy.rightX() != 0 and joy.rightY() != 0:
             Right_Joy_Direction = (180/np.pi)*np.arctan2(joy.rightY() ,joy.rightX())
             Move_Arrow(round(Right_Joy_Direction,2))
             
@@ -1004,7 +1008,7 @@ def Handle_Xbox():
             Coil4.value =  -round((Bx+BxPer)*scalex/(1+c/A),4) # -X
             Coil5.value =   round((Bz+BzPer)*scalez/(1+c/A),4)  # +Z
             Coil6.value =  -round((Bz+BzPer)*scalez/(1+c/A),4)  # -Z
-
+        
   
         window.update() 
 
@@ -1015,13 +1019,13 @@ def Handle_Xbox():
     while not joy.Back():
         
         #check dpad tweezer inputs
-        D_Pad()
+        #D_Pad()
 
         #check trigger z inputs
-        Triggers()
+        #Triggers()
 
         #check spin y button input
-        Spin()
+        #Spin()
 
 
         #A Button Function --> Acoustic Module Toggle
@@ -1032,13 +1036,102 @@ def Handle_Xbox():
         last_state = button_state
         if counter %2 != 0 and switch_state !=0:
             switch_state = 0
-            AcousticModule.start(int(acoustic_slider.get()))
-            Text_Box.insert(tk.END, str(int(acoustic_slider.get())) + '\n')
+            AcousticModule.start(ACOUSTIC_PARAMS["acoustic_freq"])
+            Text_Box.insert(tk.END, str(ACOUSTIC_PARAMS["acoustic_freq"]) + '\n')
             Text_Box.see("end")
         elif counter %2 == 0 and switch_state !=1:
             switch_state = 1
             AcousticModule.stop()
-            Text_Box.insert(tk.END, 'OFF\n')
+            Text_Box.insert(tk.END, '--------OFF--------\n')
+            Text_Box.see("end")
+        
+        
+        
+        
+        elif joy.Y():
+            tp = time.time() - start
+            A = float(Duty_Cycle) #amplitude of rotating magetnic field
+            gamma = 90
+            mapped_frequency = np.sqrt(joy.rightX()**2 + joy.rightY()**2) * 20  
+            omega = 2*np.pi* float(mapped_frequency) #2*np.pi* float(Rot_Freq_Entry.get())  #angular velocity of rotating field defined from input from Rotating Frequency Entry
+        
+            alpha = 0
+            Bx = A * ( (np.cos(gamma) * np.cos(alpha) * np.cos(omega*tp)) + (np.sin(alpha) * np.sin(omega*tp)))
+            By = A * ( (-np.cos(gamma) * np.sin(alpha) * np.cos(omega*tp)) + (np.cos(alpha) * np.sin(omega*tp)))
+            Bz = A * np.sin(gamma) * np.cos(omega*tp)
+            
+            Coil1.value =   round(By*scaley) # +Y
+            Coil2.value =   round(Bx*scalex) # +X
+            Coil3.value =  -round(By*scaley)  # -Y
+            Coil4.value =  -round(Bx*scalex) # -X
+            Coil5.value =   round(Bz*scalez)  # +Z
+            Coil6.value =  -round(Bz*scalez)  # -Z
+            
+            Text_Box.insert(tk.END, 'y activated\n')
+            Text_Box.see("end")
+            
+            
+        elif joy.rightTrigger() > 0:
+            #Output positive Z Field
+            Coil5.value = round(joy.rightTrigger(),2)*scalez
+            Coil6.value = -round(joy.rightTrigger(),2)*scalez
+            #Display joystick readings in entry box
+            Z_Strength_Entry.delete(0, tk.END)
+            Z_Strength_Entry.insert(0, str(round(joy.rightTrigger(),2))) #print 0 -> +1 as positive 
+            Text_Box.insert(tk.END, 'right trigger activated\n')
+            Text_Box.see("end")
+                
+        #negative Z
+        elif joy.leftTrigger() > 0:
+            #Output negative Z Field
+            Coil5.value = -round(joy.leftTrigger(),2)*scalez
+            Coil6.value = round(joy.leftTrigger(),2)*scalez
+            #Display joystick readings in entry box
+            Z_Strength_Entry.delete(0, tk.END)
+            Z_Strength_Entry.insert(0, str(-round(joy.leftTrigger(),2))) #print 0 -> -1 as negatie Z
+            Text_Box.insert(tk.END, 'left trigger activated\n')
+            Text_Box.see("end")
+        
+
+        #Dpad
+        elif joy.dpadUp() != 0:
+            Coil1.value = float(Duty_Cycle)
+            Coil2.value = 0
+            Coil3.value = 0
+            Coil4.value = 0
+            Coil5.value = 0
+            Coil6.value = 0
+            Text_Box.insert(tk.END, 'dpad up activated\n')
+            Text_Box.see("end")
+      
+        elif joy.dpadRight() != 0:
+            Coil1.value = 0
+            Coil2.value = float(Duty_Cycle)
+            Coil3.value = 0
+            Coil4.value = 0
+            Coil5.value = 0
+            Coil6.value = 0
+            Text_Box.insert(tk.END, 'dpad right activated\n')
+            Text_Box.see("end")
+           
+        elif joy.dpadDown() != 0:
+            Coil1.value = 0
+            Coil2.value = 0
+            Coil3.value = float(Duty_Cycle)
+            Coil4.value = 0
+            Coil5.value = 0
+            Coil6.value = 0
+            Text_Box.insert(tk.END, 'dpad down activated\n')
+            Text_Box.see("end")
+       
+        elif joy.dpadLeft() != 0:
+            Coil1.value = 0
+            Coil2.value = 0
+            Coil3.value = 0
+            Coil4.value = float(Duty_Cycle)
+            Coil5.value = 0
+            Coil6.value = 0
+            Text_Box.insert(tk.END, 'dpad left activated\n')
             Text_Box.see("end")
                 
         #uniform field
@@ -1053,7 +1146,6 @@ def Handle_Xbox():
             Text_Box.see("end")
             Right_Joystick()
         
-        
         else:
             Coil1.value = 0
             Coil2.value = 0
@@ -1063,6 +1155,11 @@ def Handle_Xbox():
             Coil6.value = 0
             Text_Box.insert(tk.END, 'zeroed\n')
             Text_Box.see("end")
+            Z_Strength_Entry.delete(0, tk.END)
+            Z_Strength_Entry.insert(0, str(0))
+        
+        
+        
         
              
         
