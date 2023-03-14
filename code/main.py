@@ -9,7 +9,7 @@ from AcousticHandler import AcousticHandler
 
 #os.system("sudo pigpiod")
 #os.system("sudo systemctl enable pigpiod")
-os.system("sudo systemctl disable GUI.service")
+
 
 AcousticModule = AcousticHandler()
 ACOUSTIC_PARAMS = {"acoustic_freq": 10000}
@@ -143,7 +143,7 @@ window = tk.Tk() #initilize a window window.title("MagneticFieldGui2")
 # get the screen dimension
 
 window.geometry("1024x768")
-window.attributes('-fullscreen', True)
+#window.attributes('-fullscreen', True)
 
 rows = [0,1,2,3,4,5,6,7]
 columns = [0,1,2,3,4,5,6,7]
@@ -777,28 +777,6 @@ def Handle_Xbox():
     functions assigned to each button of the controller
     '''
     #Spin --> Hold Y to Spin MR
-    def Spin():
-        if joy.Y():
-            tp = time.time() - start
-            A = float(Duty_Cycle) #amplitude of rotating magetnic field
-            gamma = 90
-            mapped_frequency = np.sqrt(joy.rightX()**2 + joy.rightY()**2) * 20  
-            omega = 2*np.pi* float(mapped_frequency) #2*np.pi* float(Rot_Freq_Entry.get())  #angular velocity of rotating field defined from input from Rotating Frequency Entry
-        
-            alpha = 0
-            Bx = A * ( (np.cos(gamma) * np.cos(alpha) * np.cos(omega*tp)) + (np.sin(alpha) * np.sin(omega*tp)))
-            By = A * ( (-np.cos(gamma) * np.sin(alpha) * np.cos(omega*tp)) + (np.cos(alpha) * np.sin(omega*tp)))
-            Bz = A * np.sin(gamma) * np.cos(omega*tp)
-            
-            Coil1.value =   round(By*scaley) # +Y
-            Coil2.value =   round(Bx*scalex) # +X
-            Coil3.value =  -round(By*scaley)  # -Y
-            Coil4.value =  -round(Bx*scalex) # -X
-            Coil5.value =   round(Bz*scalez)  # +Z
-            Coil6.value =  -round(Bz*scalez)  # -Z
-            
-            Text_Box.insert(tk.END, 'y activated\n')
-            Text_Box.see("end")
 
     
     #Triggers --> Variable +- Z Field
@@ -902,7 +880,7 @@ def Handle_Xbox():
         
         #taking magntiude of x,y joystick position and multipling it by 20. so rolling speed varys with joystick yaw
         mapped_frequency = np.sqrt(joy.rightX()**2 + joy.rightY()**2) * 20  
-        omega = 2*np.pi* float(mapped_frequency) #2*np.pi* float(Rot_Freq_Entry.get())  #angular velocity of rotating field defined from input from Rotating Frequency Entry
+        omega =2*np.pi* float(Rot_Freq_Entry.get())# 2*np.pi* float(mapped_frequency) #2*np.pi* float(Rot_Freq_Entry.get())  #angular velocity of rotating field defined from input from Rotating Frequency Entry
         
         if joy.rightX() == 0 and joy.rightY() > 0:
             Right_Joy_Direction = 90
@@ -974,7 +952,7 @@ def Handle_Xbox():
             Coil5.value =   round((Bz+BzPer)*scalez/(1+c/A),4)  # +Z
             Coil6.value =  -round((Bz+BzPer)*scalez/(1+c/A),4)  # -Z
         
-        elif joy.rightX() != 0 and joy.rightY() != 0:
+        else:
             Right_Joy_Direction = (180/np.pi)*np.arctan2(joy.rightY() ,joy.rightX())
             Move_Arrow(round(Right_Joy_Direction,2))
             
@@ -1025,8 +1003,7 @@ def Handle_Xbox():
         #Triggers()
 
         #check spin y button input
-        #Spin()
-
+        
 
         #A Button Function --> Acoustic Module Toggle
         button_state = joy.A()
@@ -1048,14 +1025,14 @@ def Handle_Xbox():
         
         
         
-        elif joy.Y():
+        elif joy.Y() > 0:
             tp = time.time() - start
-            A = float(Duty_Cycle) #amplitude of rotating magetnic field
-            gamma = 90
-            mapped_frequency = np.sqrt(joy.rightX()**2 + joy.rightY()**2) * 20  
-            omega = 2*np.pi* float(mapped_frequency) #2*np.pi* float(Rot_Freq_Entry.get())  #angular velocity of rotating field defined from input from Rotating Frequency Entry
+            A = 1 #amplitude of rotating magetnic field
+            gamma = 0
+            #mapped_frequency = np.sqrt(joy.rightX()**2 + joy.rightY()**2) * 20  
+            omega = 2*np.pi* float(Rot_Freq_Entry.get()) #2*np.pi* float(Rot_Freq_Entry.get())  #angular velocity of rotating field defined from input from Rotating Frequency Entry
         
-            alpha = 0
+            alpha = 1
             Bx = A * ( (np.cos(gamma) * np.cos(alpha) * np.cos(omega*tp)) + (np.sin(alpha) * np.sin(omega*tp)))
             By = A * ( (-np.cos(gamma) * np.sin(alpha) * np.cos(omega*tp)) + (np.cos(alpha) * np.sin(omega*tp)))
             Bz = A * np.sin(gamma) * np.cos(omega*tp)
