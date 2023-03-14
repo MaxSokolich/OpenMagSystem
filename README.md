@@ -10,4 +10,4 @@ todo:
 - add GUI space for hall sensor readings
 -  hall module 
 
-![alt text](https://github.com/MaxSokolich/OpenMagSystem/blob/main/A.PNG?raw=true)
+![alt text](https://github.com/MaxSokolich/OpenMagSystem/blob/main/OpenGUI.PNG?raw=true)
