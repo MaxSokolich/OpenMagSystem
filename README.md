@@ -1,11 +1,16 @@
+
+
 # OpenMagSystem
-an open loop magnetic controller for controller magnetic microrobots
+see:
+
+Sokolich, Max, David Rivas, Yanda Yang, Markos Duey, and Sambeeta Das. "Modmag: A modular magnetic micro-robotic manipulation device." MethodsX (2023): 102171.
+
+an open loop microrobotic manipulation system
 
 max sokolich
 todo: 
 - add req.txt
 - add electrical schematic 
-- reference modmag paper
 - refactor
 - add GUI space for hall sensor readings
 -  hall module 
