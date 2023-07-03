@@ -708,9 +708,10 @@ def Rotate():
     start = time.time()
     while Rotation_Status == True:
         tp = time.time() - start
-        Bx =  A*( (np.cos(gamma) * np.cos(alpha) * np.cos(omega*tp)) + (np.sin(alpha) * np.sin(omega*tp)))
-        By =  A*( (-np.cos(gamma) * np.sin(alpha) * np.cos(omega*tp)) + (np.cos(alpha) * np.sin(omega*tp)))
-        Bz =  A*np.sin(gamma) * np.cos(omega*tp)
+        #new eqs7/3/23:
+        Bx = A * (-np.sin(self.alpha) * np.sin(self.omega*tp)) + (-np.cos(self.alpha) * np.cos(self.gamma)  * np.cos(self.omega*tp)) 
+        By = A * (np.cos(self.alpha) * np.sin(self.omega*tp)) + (-np.sin(self.alpha) * np.cos(self.gamma) *  np.cos(self.omega*tp)) 
+        Bz = A * np.sin(self.gamma) * np.cos(self.omega*tp)
         print('Bx:'+str(Bx)+' By: '+str(By)+' Bz: '+str(Bz)+' gamma: '+str(gamma)+' alpha: '+str(alpha))
         
         
@@ -887,10 +888,11 @@ def Handle_Xbox():
             Move_Arrow(90)
             
             alpha = (90-90) * (np.pi/180)  # yaw angle converted to radians
-            Bx = ( (np.cos(gamma) * np.cos(alpha) * np.cos(omega*tp)) + (np.sin(alpha) * np.sin(omega*tp)))
-            By = ( (-np.cos(gamma) * np.sin(alpha) * np.cos(omega*tp)) + (np.cos(alpha) * np.sin(omega*tp)))
-            Bz = np.sin(gamma) * np.cos(omega*tp)
-
+            #new eqs7/3/23:
+            Bx = (-np.sin(self.alpha) * np.sin(self.omega*tp)) + (-np.cos(self.alpha) * np.cos(self.gamma)  * np.cos(self.omega*tp)) 
+            By =  (np.cos(self.alpha) * np.sin(self.omega*tp)) + (-np.sin(self.alpha) * np.cos(self.gamma) *  np.cos(self.omega*tp)) 
+            Bz = np.sin(self.gamma) * np.cos(self.omega*tp)
+            
             if psi < np.pi/2:
                 if alpha % (np.pi/2) == 0:
                     alpha = alpha + 0.00001#for some strange reason the eqns give wrong answers when alpha is pi/2
@@ -922,9 +924,11 @@ def Handle_Xbox():
             Move_Arrow(270)
             
             alpha = (270-90) * (np.pi/180)  # yaw angle converted to radians
-            Bx = ( (np.cos(gamma) * np.cos(alpha) * np.cos(omega*tp)) + (np.sin(alpha) * np.sin(omega*tp)))
-            By = ( (-np.cos(gamma) * np.sin(alpha) * np.cos(omega*tp)) + (np.cos(alpha) * np.sin(omega*tp)))
-            Bz = np.sin(gamma) * np.cos(omega*tp)
+            #new eqs7/3/23:
+            Bx = (-np.sin(self.alpha) * np.sin(self.omega*tp)) + (-np.cos(self.alpha) * np.cos(self.gamma)  * np.cos(self.omega*tp)) 
+            By =  (np.cos(self.alpha) * np.sin(self.omega*tp)) + (-np.sin(self.alpha) * np.cos(self.gamma) *  np.cos(self.omega*tp)) 
+            Bz = np.sin(self.gamma) * np.cos(self.omega*tp)
+            
 
             if psi < np.pi/2:
                 if alpha % (np.pi/2) == 0:
@@ -957,9 +961,10 @@ def Handle_Xbox():
             Move_Arrow(round(Right_Joy_Direction,2))
             
             alpha = (Right_Joy_Direction-90) * (np.pi/180)  # yaw angle converted to radians
-            Bx = ( (np.cos(gamma) * np.cos(alpha) * np.cos(omega*tp)) + (np.sin(alpha) * np.sin(omega*tp)))
-            By = ( (-np.cos(gamma) * np.sin(alpha) * np.cos(omega*tp)) + (np.cos(alpha) * np.sin(omega*tp)))
-            Bz = np.sin(gamma) * np.cos(omega*tp)
+            #new eqs7/3/23:
+            Bx = (-np.sin(self.alpha) * np.sin(self.omega*tp)) + (-np.cos(self.alpha) * np.cos(self.gamma)  * np.cos(self.omega*tp)) 
+            By =  (np.cos(self.alpha) * np.sin(self.omega*tp)) + (-np.sin(self.alpha) * np.cos(self.gamma) *  np.cos(self.omega*tp)) 
+            Bz = np.sin(self.gamma) * np.cos(self.omega*tp)
 
             if psi < np.pi/2:
                 if alpha % (np.pi/2) == 0:
@@ -1033,9 +1038,10 @@ def Handle_Xbox():
             omega = 2*np.pi* float(Rot_Freq_Entry.get()) #2*np.pi* float(Rot_Freq_Entry.get())  #angular velocity of rotating field defined from input from Rotating Frequency Entry
         
             alpha = 1
-            Bx = A * ( (np.cos(gamma) * np.cos(alpha) * np.cos(omega*tp)) + (np.sin(alpha) * np.sin(omega*tp)))
-            By = A * ( (-np.cos(gamma) * np.sin(alpha) * np.cos(omega*tp)) + (np.cos(alpha) * np.sin(omega*tp)))
-            Bz = A * np.sin(gamma) * np.cos(omega*tp)
+            #new eqs7/3/23:
+            Bx = (-np.sin(self.alpha) * np.sin(self.omega*tp)) + (-np.cos(self.alpha) * np.cos(self.gamma)  * np.cos(self.omega*tp)) 
+            By =  (np.cos(self.alpha) * np.sin(self.omega*tp)) + (-np.sin(self.alpha) * np.cos(self.gamma) *  np.cos(self.omega*tp)) 
+            Bz = np.sin(self.gamma) * np.cos(self.omega*tp)
             
             Coil1.value =   round(By*scaley) # +Y
             Coil2.value =   round(Bx*scalex) # +X
