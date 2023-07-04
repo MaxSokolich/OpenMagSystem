@@ -709,8 +709,8 @@ def Rotate():
     while Rotation_Status == True:
         tp = time.time() - start
         #new eqs7/3/23:
-        Bx = A * (-np.sin(self.alpha) * np.sin(self.omega*tp)) + (-np.cos(self.alpha) * np.cos(self.gamma)  * np.cos(self.omega*tp)) 
-        By = A * (np.cos(self.alpha) * np.sin(self.omega*tp)) + (-np.sin(self.alpha) * np.cos(self.gamma) *  np.cos(self.omega*tp)) 
+        Bx = A * ((-np.sin(self.alpha) * np.sin(self.omega*tp)) + (-np.cos(self.alpha) * np.cos(self.gamma)  * np.cos(self.omega*tp))) 
+        By = A * ((np.cos(self.alpha) * np.sin(self.omega*tp)) + (-np.sin(self.alpha) * np.cos(self.gamma) *  np.cos(self.omega*tp))) 
         Bz = A * np.sin(self.gamma) * np.cos(self.omega*tp)
         print('Bx:'+str(Bx)+' By: '+str(By)+' Bz: '+str(Bz)+' gamma: '+str(gamma)+' alpha: '+str(alpha))
         
@@ -721,9 +721,9 @@ def Rotate():
             if gamma == 0 or gamma % (np.pi/2) == 0:
                 gamma = gamma + 0.00001
             c = A/np.tan(psi)
-            BxPer = c*np.sqrt((1+np.tan(alpha)**2+((-np.tan(alpha)**2+np.cos(alpha)**2)/(np.cos(alpha)*np.tan(gamma)))**2)**(-1))
-            ByPer = -np.tan(alpha)*BxPer
-            BzPer = BxPer*(-np.tan(alpha)**2+np.cos(alpha)**2)/(np.cos(alpha)*np.tan(gamma))
+            BxPer = c*np.cos(alpha)*np.sin(gamma)
+            ByPer = np.tan(alpha)*BxPer
+            BzPer = BxPer*np.cos(alpha)**(-1)*np.tan(gamma)**(-1)
             print('Bxper:'+str(BxPer)+' Byper: '+str(ByPer)+' Bzper: '+str(BzPer)+' gamma: '+str(gamma))
             
         else:
@@ -889,9 +889,9 @@ def Handle_Xbox():
             
             alpha = (90-90) * (np.pi/180)  # yaw angle converted to radians
             #new eqs7/3/23:
-            Bx = (-np.sin(self.alpha) * np.sin(self.omega*tp)) + (-np.cos(self.alpha) * np.cos(self.gamma)  * np.cos(self.omega*tp)) 
-            By =  (np.cos(self.alpha) * np.sin(self.omega*tp)) + (-np.sin(self.alpha) * np.cos(self.gamma) *  np.cos(self.omega*tp)) 
-            Bz = np.sin(self.gamma) * np.cos(self.omega*tp)
+            Bx = A * ((-np.sin(self.alpha) * np.sin(self.omega*tp)) + (-np.cos(self.alpha) * np.cos(self.gamma)  * np.cos(self.omega*tp))) 
+            By = A * ((np.cos(self.alpha) * np.sin(self.omega*tp)) + (-np.sin(self.alpha) * np.cos(self.gamma) *  np.cos(self.omega*tp))) 
+            Bz = A * np.sin(self.gamma) * np.cos(self.omega*tp)
             
             if psi < np.pi/2:
                 if alpha % (np.pi/2) == 0:
@@ -900,9 +900,9 @@ def Handle_Xbox():
                     gamma = gamma + 0.00001
                 A=1
                 c = A/np.tan(psi)
-                BxPer = c*np.sqrt((1+np.tan(alpha)**2+((-np.tan(alpha)**2+np.cos(alpha)**2)/(np.cos(alpha)*np.tan(gamma)))**2)**(-1))
-                ByPer = -np.tan(alpha)*BxPer
-                BzPer = BxPer*(-np.tan(alpha)**2+np.cos(alpha)**2)/(np.cos(alpha)*np.tan(gamma))
+                BxPer = c*np.cos(alpha)*np.sin(gamma)
+                ByPer = np.tan(alpha)*BxPer
+                BzPer = BxPer*np.cos(alpha)**(-1)*np.tan(gamma)**(-1)
                 #print('Bxper:'+str(BxPer)+' Byper: '+str(ByPer)+' Bzper: '+str(BzPer)+' gamma: '+str(gamma))
                 
             else:
@@ -925,9 +925,9 @@ def Handle_Xbox():
             
             alpha = (270-90) * (np.pi/180)  # yaw angle converted to radians
             #new eqs7/3/23:
-            Bx = (-np.sin(self.alpha) * np.sin(self.omega*tp)) + (-np.cos(self.alpha) * np.cos(self.gamma)  * np.cos(self.omega*tp)) 
-            By =  (np.cos(self.alpha) * np.sin(self.omega*tp)) + (-np.sin(self.alpha) * np.cos(self.gamma) *  np.cos(self.omega*tp)) 
-            Bz = np.sin(self.gamma) * np.cos(self.omega*tp)
+            Bx = A * ((-np.sin(self.alpha) * np.sin(self.omega*tp)) + (-np.cos(self.alpha) * np.cos(self.gamma)  * np.cos(self.omega*tp))) 
+            By = A * ((np.cos(self.alpha) * np.sin(self.omega*tp)) + (-np.sin(self.alpha) * np.cos(self.gamma) *  np.cos(self.omega*tp))) 
+            Bz = A * np.sin(self.gamma) * np.cos(self.omega*tp)
             
 
             if psi < np.pi/2:
@@ -937,9 +937,9 @@ def Handle_Xbox():
                     gamma = gamma + 0.00001
                 A=1
                 c = A/np.tan(psi)
-                BxPer = c*np.sqrt((1+np.tan(alpha)**2+((-np.tan(alpha)**2+np.cos(alpha)**2)/(np.cos(alpha)*np.tan(gamma)))**2)**(-1))
-                ByPer = -np.tan(alpha)*BxPer
-                BzPer = BxPer*(-np.tan(alpha)**2+np.cos(alpha)**2)/(np.cos(alpha)*np.tan(gamma))
+                BxPer = c*np.cos(alpha)*np.sin(gamma)
+                ByPer = np.tan(alpha)*BxPer
+                BzPer = BxPer*np.cos(alpha)**(-1)*np.tan(gamma)**(-1)
                 #print('Bxper:'+str(BxPer)+' Byper: '+str(ByPer)+' Bzper: '+str(BzPer)+' gamma: '+str(gamma))
                 
             else:
@@ -962,9 +962,9 @@ def Handle_Xbox():
             
             alpha = (Right_Joy_Direction-90) * (np.pi/180)  # yaw angle converted to radians
             #new eqs7/3/23:
-            Bx = (-np.sin(self.alpha) * np.sin(self.omega*tp)) + (-np.cos(self.alpha) * np.cos(self.gamma)  * np.cos(self.omega*tp)) 
-            By =  (np.cos(self.alpha) * np.sin(self.omega*tp)) + (-np.sin(self.alpha) * np.cos(self.gamma) *  np.cos(self.omega*tp)) 
-            Bz = np.sin(self.gamma) * np.cos(self.omega*tp)
+            Bx = A * ((-np.sin(self.alpha) * np.sin(self.omega*tp)) + (-np.cos(self.alpha) * np.cos(self.gamma)  * np.cos(self.omega*tp))) 
+            By = A * ((np.cos(self.alpha) * np.sin(self.omega*tp)) + (-np.sin(self.alpha) * np.cos(self.gamma) *  np.cos(self.omega*tp))) 
+            Bz = A * np.sin(self.gamma) * np.cos(self.omega*tp)
 
             if psi < np.pi/2:
                 if alpha % (np.pi/2) == 0:
@@ -973,9 +973,9 @@ def Handle_Xbox():
                     gamma = gamma + 0.00001
                 A=1
                 c = A/np.tan(psi)
-                BxPer = c*np.sqrt((1+np.tan(alpha)**2+(-(np.tan(alpha)**2+np.cos(alpha)**2)/(np.cos(alpha)*np.tan(gamma)))**2)**(-1))
-                ByPer = -np.tan(alpha)*BxPer
-                BzPer = BxPer*(-np.tan(alpha)**2+np.cos(alpha)**2)/(np.cos(alpha)*np.tan(gamma))
+                BxPer = c*np.cos(alpha)*np.sin(gamma)
+                ByPer = np.tan(alpha)*BxPer
+                BzPer = BxPer*np.cos(alpha)**(-1)*np.tan(gamma)**(-1)
                 #print('Bxper:'+str(BxPer)+' Byper: '+str(ByPer)+' Bzper: '+str(BzPer)+' gamma: '+str(gamma))
                 
             else:
@@ -1039,9 +1039,9 @@ def Handle_Xbox():
         
             alpha = 1
             #new eqs7/3/23:
-            Bx = (-np.sin(self.alpha) * np.sin(self.omega*tp)) + (-np.cos(self.alpha) * np.cos(self.gamma)  * np.cos(self.omega*tp)) 
-            By =  (np.cos(self.alpha) * np.sin(self.omega*tp)) + (-np.sin(self.alpha) * np.cos(self.gamma) *  np.cos(self.omega*tp)) 
-            Bz = np.sin(self.gamma) * np.cos(self.omega*tp)
+            Bx = A * ((-np.sin(self.alpha) * np.sin(self.omega*tp)) + (-np.cos(self.alpha) * np.cos(self.gamma)  * np.cos(self.omega*tp))) 
+            By = A * ((np.cos(self.alpha) * np.sin(self.omega*tp)) + (-np.sin(self.alpha) * np.cos(self.gamma) *  np.cos(self.omega*tp))) 
+            Bz = A * np.sin(self.gamma) * np.cos(self.omega*tp)
             
             Coil1.value =   round(By*scaley) # +Y
             Coil2.value =   round(Bx*scalex) # +X
