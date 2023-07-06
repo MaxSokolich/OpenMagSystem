@@ -143,7 +143,7 @@ window = tk.Tk() #initilize a window window.title("MagneticFieldGui2")
 # get the screen dimension
 
 window.geometry("1024x768")
-window.attributes('-fullscreen', True)
+#window.attributes('-fullscreen', True)
 
 rows = [0,1,2,3,4,5,6,7]
 columns = [0,1,2,3,4,5,6,7]
