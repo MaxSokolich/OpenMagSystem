@@ -883,6 +883,8 @@ def Handle_Xbox():
         mapped_frequency = np.sqrt(joy.rightX()**2 + joy.rightY()**2) * 20  
         omega =2*np.pi* float(Rot_Freq_Entry.get())# 2*np.pi* float(mapped_frequency) #2*np.pi* float(Rot_Freq_Entry.get())  #angular velocity of rotating field defined from input from Rotating Frequency Entry
         
+        Triggers()
+
         if joy.rightX() == 0 and joy.rightY() > 0:
             Right_Joy_Direction = 90
             Move_Arrow(90)
